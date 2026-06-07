@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MediaHub Pro</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -57,7 +57,7 @@
         .toast-enter { transform: translateX(100%); opacity: 0; }
         .toast-active { transform: translateX(0); opacity: 1; }
 
-        .poster-bg { background-size: cover; background-position: center; width: 100%; height: 340px; position: relative; }
+        .poster-bg { background-size: cover; background-position: center; width: 100%; position: relative; }
         .poster-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,15,18,1) 5%, transparent 70%); }
         
         .trending-card {
@@ -71,7 +71,6 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* Жива анімація на фоні */
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .animate-scroll { display: flex; width: 200%; animation: scroll 40s linear infinite; }
     </style>
@@ -80,18 +79,21 @@
 
     <div id="toastContainer" class="fixed top-24 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
 
-    <nav class="apple-nav sticky top-0 w-full z-50 px-6 md:px-8 py-4 flex justify-between items-center flex-wrap gap-4">
-        <button onclick="goHome()" class="text-2xl font-bold tracking-tight hover:text-[#2997ff] transition flex items-center gap-2">
-            <svg class="w-7 h-7 text-[#2997ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/></svg>
+    <nav class="apple-nav sticky top-0 w-full z-50 px-4 md:px-8 py-4 flex justify-between items-center flex-wrap gap-4">
+        <button onclick="goHome()" class="text-xl md:text-2xl font-bold tracking-tight hover:text-[#2997ff] transition flex items-center gap-2">
+            <svg class="w-6 h-6 md:w-7 md:h-7 text-[#2997ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/></svg>
             MediaHub
         </button>
         <div id="navGuest" class="flex items-center gap-4">
             <button onclick="document.getElementById('auth-section').scrollIntoView({behavior: 'smooth'})" class="text-[#2997ff] hover:text-[#55aaff] transition font-medium">Увійти</button>
         </div>
-        <div id="navUser" class="hidden-view flex items-center gap-4 md:gap-6 font-medium text-sm">
+        <div id="navUser" class="hidden-view flex flex-wrap justify-center items-center gap-3 md:gap-6 font-medium text-sm w-full md:w-auto mt-2 md:mt-0">
             <button onclick="switchTab('catalogTab');" class="text-[#86868b] hover:text-white transition">Огляд</button>
             <button onclick="switchTab('collectionTab');" class="text-[#86868b] hover:text-white transition">Медіатека</button>
-            <button onclick="switchTab('addMediaTab');" class="text-[#86868b] hover:text-white transition">Додати</button>
+            <button onclick="openCreateForm();" class="text-[#86868b] hover:text-white transition">Додати</button>
+            <button onclick="switchTab('profileTab');" class="text-[#86868b] hover:text-white transition flex items-center gap-1">
+                <svg class="w-4 h-4 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> Кабінет
+            </button>
             <div class="hidden md:block w-px h-4 bg-white/20"></div>
             <button onclick="logout()" class="text-red-500 hover:text-red-400 transition">Вийти</button>
         </div>
@@ -101,140 +103,115 @@
         <section class="min-h-[85vh] flex flex-col justify-center items-center text-center px-4 relative overflow-hidden mt-10">
             <div class="absolute inset-0 opacity-20 pointer-events-none flex flex-col gap-4 justify-center transform -rotate-6 scale-110" id="heroBgScroll">
                 <div class="animate-scroll gap-4">
-                    <img src="https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/1X7vow16X7CnCoexXh4H4F2yDJv.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/1X7vow16X7CnCoexXh4H4F2yDJv.jpg" class="h-64 rounded-xl opacity-50">
-                    <img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" class="h-64 rounded-xl opacity-50">
+                    <img src="https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/1X7vow16X7CnCoexXh4H4F2yDJv.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" class="h-64 rounded-xl opacity-50">
+                    <img src="https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/1X7vow16X7CnCoexXh4H4F2yDJv.jpg" class="h-64 rounded-xl opacity-50"><img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" class="h-64 rounded-xl opacity-50">
                 </div>
             </div>
-
-            <div class="relative z-10">
-                <h1 data-aos="fade-up" class="text-6xl md:text-8xl font-bold tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-[#86868b]">
-                    Увесь контент. <br>В одному місці.
-                </h1>
-                <p data-aos="fade-up" data-aos-delay="100" class="text-xl md:text-2xl text-[#86868b] font-medium tracking-tight max-w-2xl mx-auto mb-10">
-                    Ідеальна екосистема для ваших фільмів та ігор.
-                </p>
+            <div class="relative z-10 w-full max-w-4xl mx-auto">
+                <h1 data-aos="fade-up" class="text-5xl md:text-8xl font-bold tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-[#86868b]">Увесь контент. <br>В одному місці.</h1>
+                <p data-aos="fade-up" data-aos-delay="100" class="text-lg md:text-2xl text-[#86868b] font-medium tracking-tight mx-auto mb-10">Ідеальна екосистема для ваших фільмів та ігор.</p>
                 <div data-aos="fade-up" data-aos-delay="200" id="landingActionBtn"></div>
             </div>
-
-            <div data-aos="fade-up" data-aos-delay="400" onclick="openFeaturedMedia()" class="cursor-pointer mt-20 w-full max-w-5xl h-64 md:h-96 rounded-t-[3rem] rounded-b-3xl overflow-hidden relative shadow-[0_0_50px_rgba(41,151,255,0.15)] border border-white/10 z-10 group">
+            <div data-aos="fade-up" data-aos-delay="400" onclick="openFeaturedMedia()" class="cursor-pointer mt-20 w-full max-w-5xl h-48 md:h-96 rounded-t-[2rem] md:rounded-t-[3rem] rounded-b-xl overflow-hidden relative shadow-[0_0_50px_rgba(41,151,255,0.15)] border border-white/10 z-10 group">
                  <div id="heroDynamicBg" class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=2070')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105"></div>
                  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                 <div class="absolute inset-0 flex flex-col justify-end p-10 text-left">
-                    <div class="text-white text-3xl font-bold tracking-wide mb-2 drop-shadow-md">Твій особистий простір</div>
-                    <p id="heroDynamicTitle" class="text-[#86868b] font-medium drop-shadow-md">Керуй, оцінюй, насолоджуйся.</p>
-                 </div>
+                 <div class="absolute inset-0 flex flex-col justify-end p-6 md:p-10 text-left"><div class="text-white text-xl md:text-3xl font-bold tracking-wide mb-2 drop-shadow-md">Твій особистий простір</div><p id="heroDynamicTitle" class="text-xs md:text-base text-[#86868b] font-medium drop-shadow-md"></p></div>
             </div>
         </section>
 
         <section class="py-16 px-4 max-w-[90rem] mx-auto border-t border-white/5 mt-10">
             <div class="flex justify-between items-end mb-8">
-                <h3 data-aos="fade-right" class="text-2xl font-bold tracking-tight">Зараз у тренді</h3>
-                <button onclick="switchTab('catalogTab')" class="text-[#2997ff] font-medium hover:underline">Весь каталог &rarr;</button>
+                <h3 data-aos="fade-right" class="text-xl md:text-2xl font-bold tracking-tight">Зараз у тренді</h3>
+                <button onclick="switchTab('catalogTab')" class="text-[#2997ff] text-sm md:text-base font-medium hover:underline">Весь каталог &rarr;</button>
             </div>
-            <div id="trendingList" data-aos="fade-up" class="flex gap-6 overflow-x-auto pb-8 snap-x" style="scrollbar-width: thin; scrollbar-color: #2997ff #1c1c1e;">
-                </div>
+            <div id="trendingList" data-aos="fade-up" class="flex gap-4 md:gap-6 overflow-x-auto pb-8 snap-x" style="scrollbar-width: thin; scrollbar-color: #2997ff #1c1c1e;"></div>
         </section>
 
         <section id="auth-section" class="min-h-screen flex items-center justify-center py-24 px-4 relative border-t border-white/5">
-            <div data-aos="zoom-in" class="apple-card p-10 w-full max-w-sm relative z-10 shadow-2xl">
-                <div class="flex justify-center mb-8 gap-8 border-b border-white/10 pb-4">
-                    <button id="tabLog" onclick="toggleAuth('login')" class="text-xl font-bold tracking-tight text-white transition">Увійти</button>
-                    <button id="tabReg" onclick="toggleAuth('register')" class="text-xl font-bold tracking-tight text-[#86868b] transition hover:text-white">Реєстрація</button>
+            <div data-aos="zoom-in" class="apple-card p-6 md:p-10 w-full max-w-sm relative z-10 shadow-2xl">
+                <div class="flex justify-center mb-8 gap-6 border-b border-white/10 pb-4">
+                    <button id="tabLog" onclick="toggleAuth('login')" class="text-lg md:text-xl font-bold tracking-tight text-white transition">Увійти</button>
+                    <button id="tabReg" onclick="toggleAuth('register')" class="text-lg md:text-xl font-bold tracking-tight text-[#86868b] transition hover:text-white">Реєстрація</button>
                 </div>
                 <div id="loginForm" class="space-y-4">
-                    <input type="text" id="logUser" placeholder="Нікнейм" class="apple-input">
-                    <input type="password" id="logPass" placeholder="Пароль" class="apple-input">
-                    <button onclick="login()" class="apple-btn apple-btn-blue w-full mt-2 py-4">Вхід у систему</button>
+                    <input type="text" id="logUser" placeholder="Нікнейм" class="apple-input"><input type="password" id="logPass" placeholder="Пароль" class="apple-input"><button onclick="login()" class="apple-btn apple-btn-blue w-full mt-2 py-4">Вхід у систему</button>
                 </div>
                 <div id="registerForm" class="space-y-4 hidden-view">
-                    <input type="text" id="regUser" placeholder="Придумайте нікнейм" class="apple-input">
-                    <input type="email" id="regEmail" placeholder="Email" class="apple-input">
-                    <input type="password" id="regPass" placeholder="Пароль" class="apple-input">
-                    <button onclick="register()" class="apple-btn w-full mt-2 py-4">Створити акаунт</button>
+                    <input type="text" id="regUser" placeholder="Придумайте нікнейм" class="apple-input"><input type="email" id="regEmail" placeholder="Email" class="apple-input"><input type="password" id="regPass" placeholder="Пароль" class="apple-input"><button onclick="register()" class="apple-btn w-full mt-2 py-4">Створити акаунт</button>
                 </div>
             </div>
         </section>
     </div>
 
-    <div id="catalogTab" class="app-tab hidden-view max-w-[90rem] mx-auto px-6 py-12">
-        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-4 border-b border-white/10 pb-6">
+    <div id="catalogTab" class="app-tab hidden-view max-w-[90rem] mx-auto px-4 md:px-6 py-12">
+        <div class="mb-10 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-white/10 pb-6">
             <div>
-                <h2 class="text-5xl font-bold tracking-tighter mb-2">Глобальна база</h2>
-                <p class="text-[#86868b] text-lg">Знайди те, що тобі до смаку.</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-2">Глобальна база</h2>
+                <p class="text-[#86868b] text-sm md:text-lg">Знайди те, що тобі до смаку.</p>
             </div>
-            <button onclick="switchTab('addMediaTab')" class="apple-btn text-sm bg-white/10 text-white hover:bg-white hover:text-black border border-white/10">+ Додати новий</button>
-        </div>
-        <div id="catalogList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
-    </div>
-
-    <div id="collectionTab" class="app-tab hidden-view max-w-[90rem] mx-auto px-6 py-12">
-        <div class="mb-10 border-b border-white/10 pb-6">
-            <h2 class="text-5xl font-bold tracking-tighter mb-2">Мій простір</h2>
-            <p class="text-[#86868b] text-lg">Особиста статистика та збереження.</p>
-        </div>
-        <div id="collectionList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"></div>
-    </div>
-
-    <div id="addMediaTab" class="app-tab hidden-view max-w-4xl mx-auto px-6 py-12">
-        <h2 class="text-5xl font-bold tracking-tighter mb-10 text-center">Створити реліз</h2>
-        <div class="apple-card p-8 md:p-12 shadow-2xl">
-            <div class="grid md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label class="block text-[#86868b] text-sm mb-2 ml-1">Оригінальна назва *</label>
-                    <input type="text" id="newMediaTitle" placeholder="The Matrix" class="apple-input">
-                </div>
-                <div>
-                    <label class="block text-[#86868b] text-sm mb-2 ml-1">Офіційний рейтинг IMDb</label>
-                    <input type="number" id="newMediaImdb" step="0.1" max="10" placeholder="Наприклад: 8.7" class="apple-input text-yellow-400">
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-6 mb-8">
-                <div>
-                    <label class="block text-[#86868b] text-sm mb-2 ml-1">Тип *</label>
-                    <select id="newMediaType" class="apple-input appearance-none">
-                        <option value="Фільм">Фільм</option><option value="Серіал">Серіал</option><option value="Гра">Гра</option>
+            <div class="w-full lg:w-auto flex flex-col sm:flex-row gap-4 items-center">
+                <input type="text" id="searchCatalogInput" oninput="loadCatalog()" placeholder="Шукати (назва, актор, жанр)..." class="apple-input !py-3 text-sm w-full sm:min-w-[250px] bg-white/5">
+                <div class="flex gap-4 w-full sm:w-auto">
+                    <select id="filterTypeSelect" onchange="loadCatalog()" class="apple-input appearance-none !py-3 text-sm w-full sm:max-w-[150px] bg-white/5 cursor-pointer">
+                        <option value="Всі">Усі типи</option><option value="Фільм">Фільми</option><option value="Серіал">Серіали</option><option value="Гра">Ігри</option>
+                    </select>
+                    <select id="sortCatalogSelect" onchange="loadCatalog()" class="apple-input appearance-none !py-3 text-sm w-full sm:max-w-[180px] bg-white/5 cursor-pointer">
+                        <option value="new">Спочатку нові</option><option value="imdb">Рейтинг IMDb</option><option value="year">Рік випуску</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-[#86868b] text-sm mb-2 ml-1">Рік</label>
-                    <input type="number" id="newMediaYear" placeholder="1999" class="apple-input">
+            </div>
+        </div>
+        <div id="catalogList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"></div>
+    </div>
+
+    <div id="collectionTab" class="app-tab hidden-view max-w-[90rem] mx-auto px-4 md:px-6 py-12">
+        <div class="mb-10 border-b border-white/10 pb-6">
+            <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-2">Мій простір</h2>
+            <p class="text-[#86868b] text-sm md:text-lg">Особиста статистика та збереження.</p>
+        </div>
+        <div id="collectionList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6"></div>
+    </div>
+
+    <div id="addMediaTab" class="app-tab hidden-view max-w-5xl mx-auto px-4 md:px-6 py-12">
+        <h2 id="formMediaHeading" class="text-4xl md:text-5xl font-bold tracking-tighter mb-10 text-center">Створити реліз</h2>
+        <div class="apple-card p-6 md:p-12 shadow-2xl">
+            <input type="hidden" id="editMediaId">
+            
+            <div class="grid md:grid-cols-2 gap-4 md:gap-6 mb-4 md:mb-6">
+                <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Оригінальна назва *</label><input type="text" id="newMediaTitle" placeholder="The Matrix" class="apple-input"></div>
+                <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Офіційний рейтинг IMDb</label><input type="number" id="newMediaImdb" step="0.1" max="10" placeholder="Наприклад: 8.7" class="apple-input text-yellow-400"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6">
+                <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Тип *</label><select id="newMediaType" class="apple-input appearance-none"><option value="Фільм">Фільм</option><option value="Серіал">Серіал</option><option value="Гра">Гра</option></select></div>
+                <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Рік випуску</label><input type="number" id="newMediaYear" placeholder="1999" class="apple-input"></div>
+            </div>
+
+            <div class="border-t border-white/10 pt-6 mb-6">
+                <h4 class="text-lg font-bold text-white mb-4">Деталі (Метадані)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                    <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Жанри (через кому)</label><input type="text" id="newMediaGenre" placeholder="Sci-Fi, Бойовик..." class="apple-input"></div>
+                    <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Країна</label><input type="text" id="newMediaCountry" placeholder="США, Велика Британія" class="apple-input"></div>
+                    <div><label class="block text-[#86868b] text-sm mb-2 ml-1">Режисер / В ролях</label><input type="text" id="newMediaActors" placeholder="К. Нолан, К. Мерфі..." class="apple-input"></div>
                 </div>
             </div>
 
-            <div class="border-t border-white/10 pt-8 mb-8">
-                <h4 class="text-xl font-bold text-white mb-6">Візуальне оформлення</h4>
-                
-                <div class="bg-black/30 p-6 rounded-2xl border border-white/5 mb-6">
-                    <label class="block text-white font-medium mb-2">Обкладинка (Постер)</label>
-                    <div class="flex flex-col md:flex-row gap-4 items-center">
+            <div class="border-t border-white/10 pt-6 mb-8">
+                <h4 class="text-lg font-bold text-white mb-4">Візуальне оформлення</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
+                    <div class="bg-black/30 p-4 md:p-5 rounded-2xl border border-white/5">
+                        <label class="block text-white font-medium mb-2">Постер (Обкладинка)</label>
                         <input type="file" id="fileUploadInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'newMediaPoster')">
-                        <button onclick="document.getElementById('fileUploadInput').click()" class="apple-btn text-sm w-full md:w-auto shrink-0 bg-[#2997ff]/20 text-[#2997ff] hover:bg-[#2997ff] hover:text-white">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Завантажити файл
-                        </button>
-                        <span class="text-[#86868b] text-xs font-bold uppercase">або</span>
-                        <input type="text" id="newMediaPoster" placeholder="Вставити посилання (URL)..." class="apple-input !py-3 text-sm">
+                        <button onclick="document.getElementById('fileUploadInput').click()" class="apple-btn text-xs bg-[#2997ff]/20 text-[#2997ff] w-full mb-3">Завантажити з ПК</button>
+                        <input type="text" id="newMediaPoster" placeholder="Або URL..." class="apple-input !py-2 text-xs">
                     </div>
-                </div>
-
-                <div class="bg-black/30 p-6 rounded-2xl border border-white/5 mb-6">
-                    <label class="block text-white font-medium mb-2">Фоновий арт (Широкий)</label>
-                    <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="bg-black/30 p-4 md:p-5 rounded-2xl border border-white/5">
+                        <label class="block text-white font-medium mb-2">Широкий фон (Арт)</label>
                         <input type="file" id="bgUploadInput" accept="image/*" class="hidden" onchange="handleFileUpload(event, 'newMediaBg')">
-                        <button onclick="document.getElementById('bgUploadInput').click()" class="apple-btn text-sm w-full md:w-auto shrink-0 bg-purple-500/20 text-purple-400 hover:bg-purple-500 hover:text-white">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Завантажити файл
-                        </button>
-                        <span class="text-[#86868b] text-xs font-bold uppercase">або</span>
-                        <input type="text" id="newMediaBg" placeholder="Вставити посилання (URL)..." class="apple-input !py-3 text-sm">
+                        <button onclick="document.getElementById('bgUploadInput').click()" class="apple-btn text-xs bg-purple-500/20 text-purple-400 w-full mb-3">Завантажити з ПК</button>
+                        <input type="text" id="newMediaBg" placeholder="Або URL..." class="apple-input !py-2 text-xs">
                     </div>
                 </div>
-
                 <label class="block text-[#86868b] text-sm mb-2 ml-1">URL Трейлера YouTube</label>
                 <input type="text" id="newMediaTrailer" placeholder="https://youtube.com/..." class="apple-input">
             </div>
@@ -242,74 +219,116 @@
             <label class="block text-[#86868b] text-sm mb-2 ml-1">Опис / Синопсис</label>
             <textarea id="newMediaDesc" rows="4" class="apple-input mb-8 resize-none"></textarea>
 
-            <button onclick="createNewMedia()" class="apple-btn apple-btn-blue w-full text-lg py-4 shadow-lg shadow-blue-500/20">Зберегти та опублікувати</button>
+            <button id="btnSubmitMediaForm" onclick="submitMediaForm()" class="apple-btn apple-btn-blue w-full text-lg py-4 shadow-lg shadow-blue-500/20">Опублікувати</button>
         </div>
     </div>
 
     <div id="mediaDetailsTab" class="app-tab hidden-view w-full pb-20">
-        <div id="detailBanner" class="w-full h-[60vh] bg-cover bg-center relative border-b border-white/10">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/60 to-transparent"></div>
-            <div class="absolute bottom-0 w-full px-6 md:px-16 pb-12 flex flex-col md:flex-row gap-10 items-end z-10 max-w-[90rem] mx-auto left-0 right-0">
-                <img id="detailPoster" class="w-56 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-white/10 hidden md:block">
-                <div class="flex-1">
-                    <span id="detailType" class="px-3 py-1 bg-white/10 backdrop-blur rounded-md text-[10px] font-bold uppercase tracking-wider text-white mb-4 inline-block"></span>
-                    <h1 id="detailTitle" class="text-5xl md:text-7xl font-extrabold tracking-tighter text-white mb-4 drop-shadow-lg"></h1>
+        <div id="detailBanner" class="w-full h-[40vh] md:h-[65vh] bg-cover bg-center relative border-b border-white/10">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/70 to-transparent"></div>
+            <div class="absolute bottom-0 w-full px-4 md:px-16 pb-6 md:pb-12 flex flex-col md:flex-row gap-6 md:gap-10 items-start md:items-end z-10 max-w-[90rem] mx-auto left-0 right-0">
+                <img id="detailPoster" class="w-32 md:w-56 aspect-[2/3] object-cover rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-white/10 hidden md:block">
+                <div class="flex-1 w-full">
+                    <span id="detailType" class="px-3 py-1 bg-white/10 backdrop-blur rounded-md text-[10px] font-bold uppercase tracking-wider text-white mb-2 md:mb-3 inline-block"></span>
+                    <h1 id="detailTitle" class="text-4xl md:text-7xl font-extrabold tracking-tighter text-white mb-3 md:mb-4 drop-shadow-lg"></h1>
                     
-                    <div class="flex flex-wrap items-center gap-6 text-sm font-medium mb-6">
-                        <span id="detailYear" class="text-[#86868b] text-lg"></span>
-                        <div class="flex items-center gap-2 bg-black/50 backdrop-blur px-3 py-1.5 rounded-lg border border-white/5">
-                            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                            <span class="text-white font-bold">IMDb: <span id="detailImdb"></span></span>
+                    <div class="flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm font-medium mb-4 md:mb-6">
+                        <span id="detailYear" class="text-white text-base md:text-lg font-bold mr-2"></span>
+                        <span id="detailGenre" class="px-3 py-1 bg-white/10 border border-white/5 rounded-full text-[#86868b]"></span>
+                        <span id="detailCountry" class="px-3 py-1 bg-white/10 border border-white/5 rounded-full text-[#86868b]"></span>
+                        
+                        <div class="flex items-center gap-1.5 bg-black/60 backdrop-blur px-3 py-1 rounded-full border border-white/5 ml-0 md:ml-2">
+                            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <span class="text-white font-bold"><span id="detailImdb"></span></span>
                         </div>
-                        <div class="flex items-center gap-2 bg-[#2997ff]/10 backdrop-blur px-3 py-1.5 rounded-lg border border-[#2997ff]/20">
-                            <svg class="w-5 h-5 text-[#2997ff]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            <span class="text-[#2997ff] font-bold">MediaHub: <span id="detailSiteRating"></span></span>
+                        <div class="flex items-center gap-1.5 bg-[#2997ff]/20 backdrop-blur px-3 py-1 rounded-full border border-[#2997ff]/20">
+                            <span class="text-[#2997ff] font-bold">MH: <span id="detailSiteRating"></span></span>
                         </div>
                     </div>
 
-                    <div class="flex gap-4">
-                        <button id="btnWatchTrailer" class="apple-btn apple-btn-blue hidden"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Дивитись трейлер</button>
-                        <button onclick="addToCollection(currentMediaId)" class="apple-btn bg-white/10 text-white hover:bg-white hover:text-black border border-white/10">+ В медіатеку</button>
+                    <div class="flex flex-wrap gap-3 md:gap-4 mt-4 md:mt-8 w-full">
+                        <button id="btnWatchTrailer" class="apple-btn apple-btn-blue text-sm md:text-base hidden flex-1 md:flex-none"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Трейлер</button>
+                        <button onclick="addToCollection(currentMediaId)" class="apple-btn bg-white/10 text-white hover:bg-white hover:text-black border border-white/10 border-transparent text-sm md:text-base flex-1 md:flex-none">+ В медіатеку</button>
+                        <button id="btnEditMediaFromDb" onclick="editMediaFormOpen()" class="apple-btn bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 text-sm md:text-base hidden-view">Редагувати</button>
+                        <button id="btnDeleteFromDb" onclick="deleteMediaFromDb(currentMediaId)" class="apple-btn bg-red-500/10 text-red-500 border border-red-500/20 text-sm md:text-base hidden-view">Видалити</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="max-w-[90rem] mx-auto px-6 mt-12 grid lg:grid-cols-3 gap-16">
+        <div class="max-w-[90rem] mx-auto px-4 md:px-6 mt-8 md:mt-12 grid grid-cols-1 lg:grid-cols-3 gap-10 md:gap-16">
             <div class="lg:col-span-1">
-                <h3 class="text-2xl font-bold mb-4">Про реліз</h3>
-                <p id="detailDesc" class="text-[#86868b] leading-relaxed text-lg"></p>
+                <h3 class="text-xl md:text-2xl font-bold mb-4">Про реліз</h3>
+                <p id="detailActorsContainer" class="text-[#86868b] mb-4 text-sm hidden-view">
+                    <strong class="text-white">Творці/В ролях:</strong> <span id="detailActors"></span>
+                </p>
+                <p id="detailDesc" class="text-[#86868b] leading-relaxed text-base md:text-lg"></p>
             </div>
-            <div class="lg:col-span-2 apple-card p-8 shadow-2xl">
-                <div class="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+            
+            <div class="lg:col-span-2 apple-card p-6 md:p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6 md:mb-8 border-b border-white/10 pb-4">
                     <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
-                    <h3 class="text-2xl font-bold">Обговорення (<span id="commentsCount">0</span>)</h3>
+                    <h3 class="text-xl md:text-2xl font-bold">Обговорення (<span id="commentsCount">0</span>)</h3>
                 </div>
-                <div id="commentInputBlock" class="mb-8 hidden-view flex gap-4">
-                    <input type="text" id="newCommentText" placeholder="Напишіть свою думку..." class="apple-input !bg-black/50">
-                    <button onclick="postComment()" class="apple-btn bg-purple-600 text-white hover:bg-purple-500 shrink-0">Відправити</button>
+                <div id="commentInputBlock" class="mb-8 hidden-view flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="newCommentText" placeholder="Напишіть свою думку про це..." class="apple-input !bg-black/50 w-full">
+                    <button onclick="postComment()" class="apple-btn bg-purple-600 text-white hover:bg-purple-500 w-full sm:w-auto shrink-0">Відправити</button>
                 </div>
                 <div id="commentAuthReq" class="mb-8 p-4 bg-white/5 rounded-xl border border-white/10 text-center hidden-view">
-                    <p class="text-[#86868b]">Увійдіть в систему, щоб залишати коментарі.</p>
+                    <p class="text-[#86868b] text-sm md:text-base">Увійдіть в систему, щоб залишати коментарі та голосувати.</p>
                 </div>
-                <div id="commentsList" class="space-y-6 max-h-[500px] overflow-y-auto pr-2"></div>
+                <div id="commentsList" class="space-y-4 md:space-y-6 max-h-[600px] overflow-y-auto pr-2"></div>
+            </div>
+
+            <div class="col-span-1 lg:col-span-3 mt-4 md:mt-10 pt-10 border-t border-white/5 hidden-view" id="similarContentBlock">
+                <h3 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2"><svg class="w-6 h-6 text-[#2997ff]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg> Тобі також може сподобатися</h3>
+                <div id="similarList" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"></div>
             </div>
         </div>
     </div>
 
-    <div id="editModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden-view bg-black/60 backdrop-blur-md transition-opacity duration-300 opacity-0">
-        <div id="editModalContent" class="apple-card p-8 w-full max-w-md transform scale-95 transition-transform duration-300 shadow-2xl mx-4">
-            <h3 class="text-2xl font-bold mb-6 tracking-tight">Ваш прогрес</h3>
+    <div id="profileTab" class="app-tab hidden-view max-w-5xl mx-auto px-4 md:px-6 py-12">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-10">Ваш профіль</h2>
+        <div class="apple-card p-6 md:p-10 flex flex-col sm:flex-row items-center gap-6 md:gap-10 shadow-2xl mb-10 text-center sm:text-left">
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-tr from-[#2997ff] to-purple-600 flex items-center justify-center text-3xl md:text-4xl font-bold text-white shadow-[0_0_30px_rgba(41,151,255,0.4)] shrink-0">
+                <span id="profAvatarLetter">M</span>
+            </div>
+            <div>
+                <h3 id="profUsername" class="text-3xl md:text-4xl font-extrabold text-white mb-2">Username</h3>
+                <p id="profEmail" class="text-[#86868b] text-base md:text-lg mb-6">email@example.com</p>
+                <button onclick="logout()" class="apple-btn bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white text-sm px-6 w-full sm:w-auto">Вийти з акаунта</button>
+            </div>
+        </div>
+        <h3 class="text-xl md:text-2xl font-bold mb-6">Ваша статистика</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+            <div class="apple-card p-6 md:p-8 flex flex-col items-center justify-center text-center">
+                <div id="statAdded" class="text-4xl md:text-5xl font-extrabold text-white mb-2">0</div>
+                <p class="text-[#86868b] font-medium uppercase text-[10px] md:text-xs tracking-widest">Додано релізів</p>
+            </div>
+            <div class="apple-card p-6 md:p-8 flex flex-col items-center justify-center text-center">
+                <div id="statSaved" class="text-4xl md:text-5xl font-extrabold text-white mb-2">0</div>
+                <p class="text-[#86868b] font-medium uppercase text-[10px] md:text-xs tracking-widest">В медіатеці</p>
+            </div>
+            <div class="apple-card p-6 md:p-8 flex flex-col items-center justify-center text-center">
+                <div id="statComments" class="text-4xl md:text-5xl font-extrabold text-white mb-2">0</div>
+                <p class="text-[#86868b] font-medium uppercase text-[10px] md:text-xs tracking-widest">Коментарів</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden-view bg-black/60 backdrop-blur-md transition-opacity duration-300 opacity-0 p-4">
+        <div id="editModalContent" class="apple-card p-6 md:p-8 w-full max-w-md transform scale-95 transition-transform duration-300 shadow-2xl">
+            <h3 class="text-xl md:text-2xl font-bold mb-6 tracking-tight">Ваш прогрес</h3>
             <input type="hidden" id="editItemId">
-            <select id="editStatus" class="apple-input mb-4 appearance-none cursor-pointer">
+            <select id="editStatus" class="apple-input appearance-none mb-4 cursor-pointer">
                 <option value="В планах">В планах</option><option value="В процесі">В процесі</option>
                 <option value="Переглянуто/Пройдено">Переглянуто/Пройдено</option><option value="Закинуто">Закинуто</option>
             </select>
-            <input type="number" id="editRating" min="1" max="10" placeholder="Моя оцінка (1-10)" class="apple-input mb-4 text-yellow-400 font-bold">
-            <textarea id="editReview" rows="3" placeholder="Короткий відгук..." class="apple-input mb-8 resize-none"></textarea>
-            <div class="flex gap-4">
-                <button onclick="closeModal()" class="apple-btn bg-[#2c2c2e] text-white hover:bg-[#3c3c3e] w-full">Скасувати</button>
-                <button onclick="saveEdit()" class="apple-btn apple-btn-blue w-full">Зберегти</button>
+            <input type="number" id="editRating" min="1" max="10" placeholder="Ваша оцінка (1-10)" class="apple-input mb-4 text-yellow-400 font-bold">
+            <textarea id="editReview" rows="3" placeholder="Ваш відгук..." class="apple-input mb-6 md:mb-8"></textarea>
+            <div class="flex gap-3 md:gap-4">
+                <button onclick="closeModal()" class="apple-btn bg-[#2c2c2e] text-white hover:bg-[#3c3c3e] w-full text-sm md:text-base">Скасувати</button>
+                <button onclick="saveEdit()" class="apple-btn apple-btn-blue w-full text-sm md:text-base">Зберегти</button>
             </div>
         </div>
     </div>
@@ -317,16 +336,15 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 800, once: true, easing: 'ease-out-cubic' });
-        let globalCatalog = [];
-        let currentMediaId = null;
+        let globalCatalog = [], currentMediaId = null, currentUserId = null, isEditMode = false;
+        let currentMediaData = null;
 
         function showToast(msg, type='success') {
             const c=document.getElementById('toastContainer'), t=document.createElement('div');
             const bg = type==='error'?'bg-[#2c1c1e] border-red-500/30 text-red-400':'bg-[#1c1c1e] border-white/10 text-white';
-            t.className=`apple-card px-5 py-4 flex items-center gap-3 shadow-2xl transition-all duration-300 toast-enter ${bg}`;
-            t.innerHTML=`<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span class="font-medium text-sm tracking-tight">${msg}</span>`;
-            c.appendChild(t);
-            requestAnimationFrame(()=> { t.classList.remove('toast-enter'); t.classList.add('toast-active'); });
+            t.className=`apple-card px-4 py-3 md:px-5 md:py-4 flex items-center gap-3 shadow-2xl transition-all duration-300 toast-enter ${bg}`;
+            t.innerHTML=`<span class="font-medium text-xs md:text-sm tracking-tight">${msg}</span>`;
+            c.appendChild(t); requestAnimationFrame(()=> { t.classList.remove('toast-enter'); t.classList.add('toast-active'); });
             setTimeout(()=> { t.classList.remove('toast-active'); t.classList.add('toast-enter'); setTimeout(()=>t.remove(), 300); }, 3500);
         }
 
@@ -336,36 +354,46 @@
             window.scrollTo({top: 0, behavior: 'smooth'});
             if(tabId === 'catalogTab') loadCatalog();
             if(tabId === 'landingView') loadTrending();
+            if(tabId === 'collectionTab') loadMyCollection();
+            if(tabId === 'profileTab') loadProfile();
         }
         function goHome() { switchTab('landingView'); checkAuth(); }
 
-        function checkAuth() {
+        async function checkAuth() {
             const tk = localStorage.getItem('token');
+            const navG = document.getElementById('navGuest'), navU = document.getElementById('navUser'), actBtn = document.getElementById('landingActionBtn');
             if(tk) {
-                document.getElementById('navGuest').classList.add('hidden-view'); document.getElementById('navUser').classList.remove('hidden-view');
+                navG.classList.add('hidden-view'); navU.classList.remove('hidden-view');
                 if(document.getElementById('auth-section')) document.getElementById('auth-section').classList.add('hidden-view');
-                document.getElementById('landingActionBtn').innerHTML = `<button onclick="switchTab('catalogTab')" class="apple-btn apple-btn-blue text-lg px-8 py-4 shadow-[0_0_20px_rgba(41,151,255,0.4)]">Відкрити Каталог</button>`;
+                actBtn.innerHTML = `<button onclick="switchTab('catalogTab')" class="apple-btn apple-btn-blue text-base md:text-lg px-6 py-3 md:px-8 md:py-4 shadow-[0_0_20px_rgba(41,151,255,0.4)] w-full sm:w-auto">Відкрити Каталог</button>`;
+                const res = await fetch('/profile/', { headers: {'Authorization': 'Bearer ' + tk} });
+                if(res.ok) { const d = await res.json(); currentUserId = d.id; }
             } else {
-                document.getElementById('navGuest').classList.remove('hidden-view'); document.getElementById('navUser').classList.add('hidden-view');
+                navG.classList.remove('hidden-view'); navU.classList.add('hidden-view');
                 if(document.getElementById('auth-section')) document.getElementById('auth-section').classList.remove('hidden-view');
-                document.getElementById('landingActionBtn').innerHTML = `<button onclick="document.getElementById('auth-section').scrollIntoView({behavior:'smooth'})" class="apple-btn apple-btn-blue text-lg px-8 py-4 shadow-[0_0_20px_rgba(41,151,255,0.4)]">Приєднатися</button>`;
+                actBtn.innerHTML = `<button onclick="document.getElementById('auth-section').scrollIntoView({behavior:'smooth'})" class="apple-btn apple-btn-blue text-base md:text-lg px-6 py-3 md:px-8 md:py-4 shadow-[0_0_20px_rgba(41,151,255,0.4)] w-full sm:w-auto">Приєднатися</button>`;
+                currentUserId = null;
             }
         }
+        
         function toggleAuth(t) {
             if(t==='login') { document.getElementById('loginForm').classList.remove('hidden-view'); document.getElementById('registerForm').classList.add('hidden-view'); document.getElementById('tabLog').classList.replace('text-[#86868b]','text-white'); document.getElementById('tabReg').classList.replace('text-white','text-[#86868b]'); }
             else { document.getElementById('loginForm').classList.add('hidden-view'); document.getElementById('registerForm').classList.remove('hidden-view'); document.getElementById('tabReg').classList.replace('text-[#86868b]','text-white'); document.getElementById('tabLog').classList.replace('text-white','text-[#86868b]'); }
         }
+        
         async function register() {
             const u=document.getElementById('regUser').value, e=document.getElementById('regEmail').value, p=document.getElementById('regPass').value;
             const res = await fetch('/users/', { method: 'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u, email:e, password:p}) });
             if(res.ok){ showToast("Акаунт створено. Увійдіть."); toggleAuth('login'); } else showToast((await res.json()).detail, "error");
         }
+        
         async function login() {
             const f = new URLSearchParams(); f.append('username', document.getElementById('logUser').value); f.append('password', document.getElementById('logPass').value);
             const res = await fetch('/login', { method: 'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:f });
-            if(res.ok){ localStorage.setItem('token', (await res.json()).access_token); checkAuth(); switchTab('catalogTab'); showToast("Успішно"); } else showToast("Помилка", "error");
+            if(res.ok){ localStorage.setItem('token', (await res.json()).access_token); await checkAuth(); switchTab('catalogTab'); showToast("Успішно"); } else showToast("Помилка", "error");
         }
-        function logout() { localStorage.removeItem('token'); checkAuth(); goHome(); showToast("Ви вийшли"); }
+        
+        function logout() { localStorage.removeItem('token'); currentUserId = null; checkAuth(); goHome(); showToast("Ви вийшли"); }
 
         async function handleFileUpload(event, targetInputId) {
             const f = event.target.files[0]; if(!f) return;
@@ -378,84 +406,121 @@
             } catch(e) { showToast("Сервер не відповідає", "error"); }
         }
 
-        async function createNewMedia() {
+        function openCreateForm() {
+            isEditMode = false;
+            switchTab('addMediaTab');
+            document.getElementById('formMediaHeading').innerText = "Створити реліз";
+            document.getElementById('btnSubmitMediaForm').innerText = "Опублікувати";
+            document.querySelectorAll('#addMediaTab input[type="text"], #addMediaTab input[type="number"], #addMediaTab textarea').forEach(e=>e.value='');
+        }
+
+        function editMediaFormOpen() {
+            if(!currentMediaData) return showToast("Немає даних для редагування", "error");
+            isEditMode = true;
+            switchTab('addMediaTab');
+            document.getElementById('formMediaHeading').innerText = "Редагувати реліз";
+            document.getElementById('btnSubmitMediaForm').innerText = "Зберегти зміни";
+            
+            document.getElementById('editMediaId').value = currentMediaData.id;
+            document.getElementById('newMediaTitle').value = currentMediaData.title;
+            document.getElementById('newMediaImdb').value = currentMediaData.imdb_rating || '';
+            document.getElementById('newMediaType').value = currentMediaData.media_type;
+            document.getElementById('newMediaYear').value = currentMediaData.release_year || '';
+            document.getElementById('newMediaGenre').value = currentMediaData.genre || '';
+            document.getElementById('newMediaCountry').value = currentMediaData.country || '';
+            document.getElementById('newMediaActors').value = currentMediaData.actors || '';
+            document.getElementById('newMediaPoster').value = currentMediaData.poster_url || '';
+            document.getElementById('newMediaBg').value = currentMediaData.background_url || '';
+            document.getElementById('newMediaTrailer').value = currentMediaData.trailer_url || '';
+            document.getElementById('newMediaDesc').value = currentMediaData.description || '';
+        }
+
+        async function submitMediaForm() {
+            const token = localStorage.getItem('token');
+            if(!token) { showToast("Необхідно увійти!", "error"); return; }
+
             const b = {
                 title: document.getElementById('newMediaTitle').value, media_type: document.getElementById('newMediaType').value,
                 release_year: parseInt(document.getElementById('newMediaYear').value) || null,
+                genre: document.getElementById('newMediaGenre').value || null,
+                country: document.getElementById('newMediaCountry').value || null,
+                actors: document.getElementById('newMediaActors').value || null,
                 poster_url: document.getElementById('newMediaPoster').value || null, background_url: document.getElementById('newMediaBg').value || null,
                 trailer_url: document.getElementById('newMediaTrailer').value || null, description: document.getElementById('newMediaDesc').value,
                 imdb_rating: parseFloat(document.getElementById('newMediaImdb').value) || null
             };
             if(!b.title) return showToast("Вкажіть назву!", "error");
-            const res = await fetch('/media/', { method: 'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(b) });
-            if(res.ok){ showToast("Додано!"); switchTab('catalogTab'); document.querySelectorAll('#addMediaTab input, textarea').forEach(e=>e.value=''); } else showToast("Помилка", "error");
+            
+            let url = '/media/', method = 'POST';
+            if(isEditMode) { url = '/media/' + document.getElementById('editMediaId').value; method = 'PUT'; }
+
+            const res = await fetch(url, { method: method, headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}, body: JSON.stringify(b) });
+            
+            if(res.ok){ 
+                showToast(isEditMode ? "Оновлено успішно!" : "Реліз додано!"); 
+                isEditMode = false;
+                switchTab('catalogTab'); 
+            } else {
+                showToast("Помилка", "error");
+            }
         }
 
         async function loadCatalog() {
-            globalCatalog = await(await fetch('/media/')).json();
+            const searchVal = document.getElementById('searchCatalogInput').value;
+            const filterType = document.getElementById('filterTypeSelect').value;
+            const sortVal = document.getElementById('sortCatalogSelect').value;
+            
+            const res = await fetch(`/media/?q=${searchVal}&type=${filterType}&sort=${sortVal}`);
+            globalCatalog = await res.json();
+            
             const list = document.getElementById('catalogList'); list.innerHTML = '';
-            if(globalCatalog.length===0) return list.innerHTML="<p class='text-[#86868b]'>База порожня. Будь першим!</p>";
+            if(globalCatalog.length===0) return list.innerHTML="<p class='text-[#86868b] col-span-full py-10 text-center'>Нічого не знайдено.</p>";
+            
             globalCatalog.forEach(i => {
                 const p = i.poster_url || 'https://placehold.co/400x600/1c1c1e/86868b?text=NO+POSTER';
-                list.innerHTML += `
-                    <div class="apple-card apple-card-hover flex flex-col justify-between" onclick="openMediaDetails(${i.id})">
-                        <div class="poster-bg h-80" style="background-image: url('${p}')"><div class="poster-overlay"></div></div>
-                        <div class="p-5 -mt-8 relative z-10">
-                            <span class="text-[10px] font-bold text-[#86868b] uppercase mb-1 block">${i.media_type}</span>
-                            <h3 class="text-lg font-bold text-white mb-2 truncate">${i.title}</h3>
-                            <div class="flex justify-between items-center text-xs font-bold">
-                                <span class="text-[#86868b]">${i.release_year||''}</span>
-                                ${i.imdb_rating ? `<span class="text-yellow-500 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg> ${i.imdb_rating}</span>`:''}
-                            </div>
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="apple-card apple-card-hover flex flex-col justify-between" onclick="openMediaDetails(${i.id})"><div class="poster-bg h-64 md:h-80" style="background-image: url('${p}')"><div class="poster-overlay"></div></div><div class="p-4 md:p-5 -mt-8 relative z-10"><span class="text-[10px] font-bold text-[#86868b] uppercase mb-1 block">${i.media_type}</span><h3 class="text-base md:text-lg font-bold text-white mb-2 truncate">${i.title}</h3><div class="flex justify-between items-center text-xs font-bold"><span class="text-[#86868b]">${i.release_year||''}</span>${i.imdb_rating?`<span class="text-yellow-500">★ ${i.imdb_rating}</span>`:''}</div></div></div>`;
             });
         }
 
         async function loadTrending() {
             globalCatalog = await(await fetch('/media/')).json();
-            
-            // ДИНАМІЧНА ЗМІНА ЦЕНТРАЛЬНОЇ КАРТКИ НА ГОЛОВНІЙ
             if(globalCatalog.length > 0) {
-                const latest = globalCatalog[globalCatalog.length - 1]; // Беремо останній доданий
+                const latest = globalCatalog[globalCatalog.length - 1];
                 const bgImage = latest.background_url || latest.poster_url || 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=2070';
                 document.getElementById('heroDynamicBg').style.backgroundImage = `url('${bgImage}')`;
                 document.getElementById('heroDynamicTitle').innerHTML = `<strong>${latest.title}</strong> — додав хтось із ком'юніті.`;
                 document.getElementById('heroDynamicBg').parentElement.onclick = () => openMediaDetails(latest.id);
             }
-
             const list = document.getElementById('trendingList'); list.innerHTML = '';
             if(globalCatalog.length===0) return list.innerHTML="<div class='text-[#86868b] w-full text-center py-10'>База порожня. Додайте перший контент!</div>";
-            globalCatalog.slice(-8).reverse().forEach(i => { // Показуємо останні 8
+            globalCatalog.slice(-8).reverse().forEach(i => {
                 const p = i.poster_url || 'https://placehold.co/400x600/1c1c1e/86868b?text=NO+POSTER';
-                list.innerHTML += `
-                    <div class="trending-card snap-center shrink-0" style="background-image: url('${p}')" onclick="openMediaDetails(${i.id})">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                        <div class="absolute bottom-5 left-5 right-5">
-                            <h4 class="font-bold text-xl text-white mb-1 truncate">${i.title}</h4>
-                            <p class="text-xs text-[#86868b] font-bold uppercase">${i.media_type} • ${i.release_year||'N/A'}</p>
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="trending-card snap-center shrink-0 w-48 h-64 md:w-60 md:h-80" style="background-image: url('${p}')" onclick="openMediaDetails(${i.id})"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div><div class="absolute bottom-4 md:bottom-5 left-4 md:left-5 right-4 md:right-5"><h4 class="font-bold text-base md:text-xl text-white mb-1 truncate">${i.title}</h4><p class="text-[10px] md:text-xs text-[#86868b] font-bold uppercase">${i.media_type} • ${i.release_year||'N/A'}</p></div></div>`;
             });
         }
 
-        function openFeaturedMedia() {
-            if(globalCatalog.length > 0) openMediaDetails(globalCatalog[globalCatalog.length - 1].id);
-        }
+        function openFeaturedMedia() { if(globalCatalog.length > 0) openMediaDetails(globalCatalog[globalCatalog.length - 1].id); }
 
         async function openMediaDetails(id) {
-            currentMediaId = id;
-            switchTab('mediaDetailsTab');
+            currentMediaId = id; switchTab('mediaDetailsTab');
             const res = await fetch(`/media/${id}/details`);
             if(!res.ok) return showToast("Не знайдено", "error");
             const data = await res.json();
+            currentMediaData = data.media; 
             
             document.getElementById('detailTitle').innerText = data.media.title;
             document.getElementById('detailType').innerText = data.media.media_type;
-            document.getElementById('detailYear').innerText = data.media.release_year || 'Рік невідомий';
+            document.getElementById('detailYear').innerText = data.media.release_year || '';
             document.getElementById('detailDesc').innerText = data.media.description || 'Опис відсутній.';
             document.getElementById('detailImdb').innerText = data.media.imdb_rating || 'N/A';
-            document.getElementById('detailSiteRating').innerText = data.site_rating ? data.site_rating + '/10' : 'Немає оцінок';
+            document.getElementById('detailSiteRating').innerText = data.site_rating ? data.site_rating + '/10' : '—';
+            
+            const g = document.getElementById('detailGenre'), c = document.getElementById('detailCountry');
+            if(data.media.genre) { g.innerText = data.media.genre; g.classList.remove('hidden-view'); } else g.classList.add('hidden-view');
+            if(data.media.country) { c.innerText = data.media.country; c.classList.remove('hidden-view'); } else c.classList.add('hidden-view');
+            
+            const actCont = document.getElementById('detailActorsContainer');
+            if(data.media.actors) { document.getElementById('detailActors').innerText = data.media.actors; actCont.classList.remove('hidden-view'); } else actCont.classList.add('hidden-view');
 
             const bg = data.media.background_url || data.media.poster_url || 'https://images.unsplash.com/photo-1616530940355-351fabd9524b?q=80&w=2070';
             document.getElementById('detailBanner').style.backgroundImage = `url('${bg}')`;
@@ -468,20 +533,59 @@
             if(data.media.trailer_url) { trBtn.classList.remove('hidden'); trBtn.onclick = () => window.open(data.media.trailer_url, '_blank'); }
             else trBtn.classList.add('hidden');
 
+            const delBtn = document.getElementById('btnDeleteFromDb'), editBtn = document.getElementById('btnEditMediaFromDb');
+            if(currentUserId && data.media.owner_id === currentUserId) {
+                delBtn.classList.remove('hidden-view'); editBtn.classList.remove('hidden-view');
+            } else {
+                delBtn.classList.add('hidden-view'); editBtn.classList.add('hidden-view');
+            }
+
+            const simBlock = document.getElementById('similarContentBlock'), simList = document.getElementById('similarList');
+            simList.innerHTML = '';
+            if(data.similar && data.similar.length > 0) {
+                simBlock.classList.remove('hidden-view');
+                data.similar.forEach(s => {
+                    const p = s.poster_url || 'https://placehold.co/400x600/1c1c1e/86868b?text=NO+POSTER';
+                    simList.innerHTML += `
+                        <div class="apple-card apple-card-hover cursor-pointer border border-white/5" onclick="openMediaDetails(${s.id})">
+                            <div class="poster-bg h-36 md:h-48" style="background-image: url('${p}')"><div class="poster-overlay"></div></div>
+                            <div class="p-3 md:p-4 -mt-4 relative z-10">
+                                <h4 class="text-xs md:text-sm font-bold text-white truncate">${s.title}</h4>
+                                <p class="text-[10px] text-[#86868b]">${s.release_year||''}</p>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                simBlock.classList.add('hidden-view');
+            }
+
             const cList = document.getElementById('commentsList'); cList.innerHTML = '';
             document.getElementById('commentsCount').innerText = data.comments.length;
-            if(data.comments.length === 0) cList.innerHTML = "<p class='text-[#86868b]'>Поки немає обговорень. Станьте першим!</p>";
+            if(data.comments.length === 0) cList.innerHTML = "<p class='text-[#86868b] text-sm md:text-base'>Поки немає обговорень. Станьте першим!</p>";
             data.comments.forEach(c => {
                 const d = new Date(c.created_at).toLocaleString('uk-UA');
                 cList.innerHTML += `
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <div class="flex justify-between items-center mb-2"><span class="font-bold text-purple-400">@${c.username}</span><span class="text-xs text-[#86868b]">${d}</span></div>
-                        <p class="text-white text-sm">${c.text}</p>
+                    <div class="bg-white/5 p-3 md:p-4 rounded-xl border border-white/5 flex items-start gap-3 md:gap-4">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center mb-1 md:mb-2"><span class="font-bold text-xs md:text-sm text-purple-400">@${c.username}</span><span class="text-[10px] md:text-xs text-[#86868b]">${d}</span></div>
+                            <p class="text-white text-xs md:text-sm">${c.text}</p>
+                        </div>
+                        <div class="flex flex-col items-center bg-black/40 px-2 py-1 md:px-3 rounded-xl border border-white/5 shrink-0">
+                            <button onclick="voteComment(${c.id}, 'up')" class="text-[#86868b] hover:text-green-400 transition"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path></svg></button>
+                            <span class="font-mono text-xs md:text-sm font-bold text-white my-0.5">${c.karma}</span>
+                            <button onclick="voteComment(${c.id}, 'down')" class="text-[#86868b] hover:text-red-400 transition"><svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg></button>
+                        </div>
                     </div>`;
             });
 
             if(localStorage.getItem('token')) { document.getElementById('commentInputBlock').classList.remove('hidden-view'); document.getElementById('commentAuthReq').classList.add('hidden-view'); } 
             else { document.getElementById('commentInputBlock').classList.add('hidden-view'); document.getElementById('commentAuthReq').classList.remove('hidden-view'); }
+        }
+
+        async function voteComment(commentId, direction) {
+            if(!localStorage.getItem('token')) return showToast("Увійдіть для голосування", "error");
+            const res = await fetch(`/comments/${commentId}/vote?direction=${direction}`, { method: 'POST', headers:{'Authorization':'Bearer '+localStorage.getItem('token')} });
+            if(res.ok) openMediaDetails(currentMediaId);
         }
 
         async function postComment() {
@@ -491,13 +595,15 @@
         }
 
         async function addToCollection(id) {
-            if(!localStorage.getItem('token')) {
-                showToast("Спочатку увійдіть у систему", "error");
-                document.getElementById('auth-section').scrollIntoView({behavior: 'smooth'});
-                return;
-            }
+            if(!localStorage.getItem('token')) { showToast("Спочатку увійдіть у систему", "error"); document.getElementById('auth-section').scrollIntoView({behavior: 'smooth'}); return; }
             const res = await fetch('/collection/', { method: 'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token')}, body:JSON.stringify({ media_id: id, status: "В планах" }) });
-            if(res.ok) showToast("Додано!"); else showToast((await res.json()).detail, "error");
+            if(res.ok) { showToast("Додано!"); await loadMyCollection(); } else showToast("Вже є в медіатеці", "error");
+        }
+
+        async function deleteMediaFromDb(id) {
+            if (!confirm("Ви впевнені, що хочете видалити цей реліз з глобальної бази назавжди?")) return;
+            const res = await fetch('/media/' + id, { method: 'DELETE', headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')} });
+            if(res.ok) { showToast("Контент видалено"); switchTab('catalogTab'); } else showToast("Помилка видалення", "error");
         }
 
         async function loadMyCollection() {
@@ -506,7 +612,7 @@
             const list = document.getElementById('collectionList');
             if(res.ok) {
                 const items = await res.json(); list.innerHTML = '';
-                if(items.length===0) return list.innerHTML="<p class='text-[#86868b]'>Порожньо. Додайте щось із каталогу.</p>";
+                if(items.length===0) return list.innerHTML="<p class='text-[#86868b] col-span-full text-center'>Порожньо. Додайте щось із каталогу.</p>";
                 items.forEach(i => {
                     const m = globalCatalog.find(x => x.id === i.media_id) || {};
                     const p = m.poster_url || 'https://placehold.co/400x600/1c1c1e/86868b?text=NO+POSTER';
@@ -516,13 +622,13 @@
                     const rev = i.review ? i.review.replace(/'/g, "\\'") : '';
                     list.innerHTML += `
                         <div class="apple-card flex flex-col justify-between group relative overflow-hidden">
-                            <div class="poster-bg h-80 cursor-pointer" style="background-image: url('${p}')" onclick="openMediaDetails(${m.id})"><div class="poster-overlay"></div><span class="absolute top-3 left-3 px-2 py-1 ${c} border rounded text-[9px] font-extrabold uppercase shadow-lg">${i.status}</span></div>
-                            <div class="p-5 -mt-8 relative z-10 flex-1 flex flex-col bg-gradient-to-t from-[#151515] to-transparent">
-                                <h3 class="text-base font-bold text-white mb-2 truncate" title="${m.title}">${m.title || "Невідомо"}</h3>
-                                ${i.rating ? `<span class="text-yellow-500 font-bold text-xs mb-2 shadow-sm">★ ${i.rating}/10</span>` : ''}
+                            <div class="poster-bg h-64 md:h-80 cursor-pointer" style="background-image: url('${p}')" onclick="openMediaDetails(${m.id})"><div class="poster-overlay"></div><span class="absolute top-2 left-2 md:top-3 md:left-3 px-2 py-1 ${c} border rounded text-[8px] md:text-[9px] font-extrabold uppercase shadow-lg">${i.status}</span></div>
+                            <div class="p-4 md:p-5 -mt-6 md:-mt-8 relative z-10 flex-1 flex flex-col bg-gradient-to-t from-[#151515] to-transparent">
+                                <h3 class="text-sm md:text-base font-bold text-white mb-2 truncate" title="${m.title}">${m.title || "Невідомо"}</h3>
+                                ${i.rating ? `<span class="text-yellow-500 font-bold text-[10px] md:text-xs mb-2 shadow-sm">★ ${i.rating}/10</span>` : ''}
                                 <div class="flex gap-2 mt-auto pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <button onclick="openModal(${i.id}, '${i.status}', '${i.rating}', '${rev}')" class="apple-btn text-xs px-2 py-2 w-full bg-white/10 text-white hover:bg-white hover:text-black">Оцінити</button>
-                                    <button onclick="deleteFromCollection(${i.id})" class="apple-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-3 py-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                    <button onclick="openModal(${i.id}, '${i.status}', '${i.rating}', '${rev}')" class="apple-btn text-[10px] md:text-xs px-2 py-2 w-full bg-white/10 text-white hover:bg-white hover:text-black">Оцінити</button>
+                                    <button onclick="deleteFromCollection(${i.id})" class="apple-btn bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white px-2 md:px-3 py-2"><svg class="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                                 </div>
                             </div>
                         </div>`;
@@ -535,8 +641,25 @@
         function closeModal() { const m = document.getElementById('editModal'), c = document.getElementById('editModalContent'); m.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(()=>m.classList.add('hidden-view'), 300); }
         async function saveEdit() { const id=document.getElementById('editItemId').value, st=document.getElementById('editStatus').value, rt=document.getElementById('editRating').value, rv=document.getElementById('editReview').value; const res = await fetch('/collection/'+id, {method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+localStorage.getItem('token')}, body:JSON.stringify({status:st, rating:rt?parseFloat(rt):null, review:rv})}); if(res.ok){ closeModal(); showToast("Оновлено"); loadMyCollection(); } else showToast("Помилка", "error"); }
 
-        checkAuth();
-        loadTrending();
+        async function loadProfile() {
+            const res = await fetch('/profile/', { headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')} });
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('profUsername').innerText = data.username;
+                document.getElementById('profEmail').innerText = data.email;
+                document.getElementById('profAvatarLetter').innerText = data.username.charAt(0).toUpperCase();
+                animateValue('statAdded', 0, data.added_media_count, 1000);
+                animateValue('statSaved', 0, data.collection_count, 1000);
+                animateValue('statComments', 0, data.comments_count, 1000);
+            }
+        }
+        function animateValue(id, start, end, duration) {
+            if (start === end) return document.getElementById(id).innerHTML = end;
+            let range = end - start, current = start, increment = end > start ? 1 : -1, stepTime = Math.abs(Math.floor(duration / range)), obj = document.getElementById(id);
+            let timer = setInterval(function() { current += increment; obj.innerHTML = current; if (current == end) clearInterval(timer); }, stepTime);
+        }
+
+        checkAuth(); loadTrending();
     </script>
 </body>
 </html>
