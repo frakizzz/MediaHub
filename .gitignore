@@ -1,4 +1,7 @@
 venv/
 __pycache__/
-static/uploads/
-*.db
+mediahub.db
+dist/
+build/
+*.spec
+static/uploads/*

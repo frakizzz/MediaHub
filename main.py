@@ -1,28 +1,55 @@
+import sys
+import os
+import uuid
+import shutil
+from datetime import datetime, timedelta, timezone
+
 from fastapi import Request, UploadFile, File, FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse 
 from fastapi.templating import Jinja2Templates 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 import jwt
 from jwt.exceptions import InvalidTokenError
-from datetime import datetime, timedelta, timezone
 import bcrypt
-import os
-import uuid
-import shutil
-from sqlalchemy import or_
 
 from database import engine, Base, get_db
 import models, schemas
 
+# --- МАГІЯ ДЛЯ ШЛЯХІВ: Примусово робимо робочою ту папку, де лежить .exe ---
+if getattr(sys, 'frozen', False):
+    # Якщо програма запущена як зібраний .exe
+    application_path = os.path.dirname(sys.executable)
+else:
+    # Якщо запущена через python локально
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+# Прив'язуємо програму до цієї папки, щоб завантаження зберігалися поруч із .exe
+os.chdir(application_path)
+
+# Абсолютні шляхи
+templates_path = os.path.join(application_path, "templates")
+static_path = os.path.join(application_path, "static")
+uploads_path = os.path.join(static_path, "uploads")
+
+# Гарантовано створюємо папку static/uploads прямо в папці з програмою
+os.makedirs(uploads_path, exist_ok=True)
+# -------------------------------------------------------------------------
+
 app = FastAPI(title="Інформаційна система управління мультимедійним контентом", version="1.0")
 
-templates = Jinja2Templates(directory="templates")
-os.makedirs("static/uploads", exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
+@app.on_event("startup")
+async def startup_event():
+    # Цей код автоматично створить усі таблиці (Users, Media тощо) при запуску
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
+# Підключаємо шаблони та статику
+templates = Jinja2Templates(directory=templates_path)
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+# -------------------------------------
 SECRET_KEY = "super_secret_diploma_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 
