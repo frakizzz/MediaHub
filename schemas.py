@@ -23,7 +23,6 @@ class MediaItemCreate(BaseModel):
     description: Optional[str] = None
     release_year: Optional[int] = None
     media_type: str
-    # --- НОВІ ПОЛЯ ---
     genre: Optional[str] = None
     country: Optional[str] = None
     actors: Optional[str] = None

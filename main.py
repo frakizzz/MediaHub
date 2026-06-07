@@ -19,12 +19,10 @@ import models, schemas
 
 app = FastAPI(title="Інформаційна система управління мультимедійним контентом", version="1.0")
 
-# --- СТАТИКА ТА ТЕМПЛЕЙТИ ---
 templates = Jinja2Templates(directory="templates")
 os.makedirs("static/uploads", exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# --- БЕЗПЕКА ТА ТОКЕНИ ---
 SECRET_KEY = "super_secret_diploma_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 
@@ -68,12 +66,10 @@ async def startup_event():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-# --- МАРШРУТИ ФРОНТЕНДУ ---
 @app.get("/", response_class=HTMLResponse, tags=["Фронтенд"])
 async def read_root(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
 
-# --- ЗАВАНТАЖЕННЯ ФАЙЛІВ ---
 @app.post("/upload-image/", tags=["Файли"])
 async def upload_image(file: UploadFile = File(...)):
     ext = file.filename.split('.')[-1]
@@ -83,7 +79,6 @@ async def upload_image(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
     return {"url": f"/{file_path}"}
 
-# --- АВТОРИЗАЦІЯ ---
 @app.post("/login", response_model=schemas.Token, tags=["Авторизація"])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(models.User).where(models.User.username == form_data.username))
@@ -107,7 +102,6 @@ async def create_user(user: schemas.UserCreate, db: AsyncSession = Depends(get_d
     await db.refresh(new_user)
     return new_user
 
-# --- ГЛОБАЛЬНИЙ КАТАЛОГ (З ПОШУКОМ, ФІЛЬТРАМИ ТА СОРТУВАННЯМ) ---
 @app.post("/media/", response_model=schemas.MediaItemResponse, tags=["Контент бази"])
 async def create_media(media: schemas.MediaItemCreate, current_user: models.User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     new_media = models.MediaItem(**media.model_dump(), owner_id=current_user.id)
@@ -120,7 +114,6 @@ async def create_media(media: schemas.MediaItemCreate, current_user: models.User
 async def get_all_media(q: str = None, type: str = None, sort: str = None, db: AsyncSession = Depends(get_db)):
     query = select(models.MediaItem)
     if q:
-        # ТЕПЕР ШУКАЄ ТАКОЖ ЗА АКТОРСЬКИМ СКЛАДОМ ТА ЖАНРОМ!
         query = query.where(
             or_(
                 models.MediaItem.title.ilike(f"%{q}%"),
@@ -164,7 +157,6 @@ async def delete_media_item(media_id: int, current_user: models.User = Depends(g
     await db.delete(item)
     await db.commit()
 
-# --- СТОРІНКА ФІЛЬМУ ТА REDDIT-КІМНАТИ ---
 @app.get("/media/{media_id}/details", tags=["Деталі контенту"])
 async def get_media_details(media_id: int, db: AsyncSession = Depends(get_db)):
     result_media = await db.execute(select(models.MediaItem).where(models.MediaItem.id == media_id))
@@ -175,16 +167,14 @@ async def get_media_details(media_id: int, db: AsyncSession = Depends(get_db)):
     ratings = result_ratings.scalars().all()
     site_rating = round(sum(ratings) / len(ratings), 1) if ratings else None
 
-    # АЛГОРИТМ "СХОЖИЙ КОНТЕНТ": Шукаємо 4 релізи того ж жанру (але не цей самий фільм)
     similar_media = []
     if media.genre:
-        first_genre = media.genre.split(',')[0].strip() # Беремо перший жанр, якщо їх кілька
+        first_genre = media.genre.split(',')[0].strip()
         res_similar = await db.execute(
             select(models.MediaItem)
             .where(models.MediaItem.genre.ilike(f"%{first_genre}%"), models.MediaItem.id != media_id)
             .limit(4)
         )
-        # Перетворюємо об'єкти на словники для зручної відправки
         similar_media = [{"id": s.id, "title": s.title, "poster_url": s.poster_url, "release_year": s.release_year} for s in res_similar.scalars().all()]
 
     result_comments = await db.execute(
@@ -199,7 +189,7 @@ async def get_media_details(media_id: int, db: AsyncSession = Depends(get_db)):
         "media": media, 
         "site_rating": site_rating, 
         "comments": comments,
-        "similar": similar_media # ВІДДАЄМО СХОЖИЙ КОНТЕНТ НА ФРОНТЕНД
+        "similar": similar_media 
     }
 
 @app.post("/comments/", tags=["Деталі контенту"])
@@ -219,7 +209,6 @@ async def vote_comment(comment_id: int, direction: str, current_user: models.Use
     await db.commit()
     return {"karma": comment.karma}
 
-# --- ОСОБИСТА МЕДІАТЕКА ---
 @app.post("/collection/", response_model=schemas.UserCollectionResponse, tags=["Моя колекція"])
 async def add_to_collection(item: schemas.UserCollectionCreate, current_user: models.User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     result_col = await db.execute(select(models.UserCollection).where(models.UserCollection.user_id == current_user.id, models.UserCollection.media_id == item.media_id))
@@ -257,7 +246,6 @@ async def delete_collection_item(item_id: int, current_user: models.User = Depen
     await db.delete(item)
     await db.commit()
 
-# --- ОСОБИСТА СТАТИСТИКА КАБІНЕТУ ---
 @app.get("/profile/", tags=["Особистий кабінет"])
 async def get_my_profile(current_user: models.User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     res_added = await db.execute(select(func.count(models.MediaItem.id)).where(models.MediaItem.owner_id == current_user.id))

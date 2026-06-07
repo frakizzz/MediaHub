@@ -21,11 +21,10 @@ class MediaItem(Base):
     description = Column(String, nullable=True)
     release_year = Column(Integer, nullable=True)
     media_type = Column(String)
-    
-    # --- НОВІ МЕТАДАНІ ДЛЯ РІВНЯ IMDb ---
-    genre = Column(String, nullable=True)     # Жанр (наприклад: Sci-Fi, Комедія)
-    country = Column(String, nullable=True)   # Країна
-    actors = Column(String, nullable=True)    # Режисер / Актори
+
+    genre = Column(String, nullable=True)
+    country = Column(String, nullable=True)
+    actors = Column(String, nullable=True) 
     
     poster_url = Column(String, nullable=True)
     background_url = Column(String, nullable=True)
